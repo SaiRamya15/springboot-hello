@@ -1,7 +1,7 @@
 pipeline {
     agent any 
     tools {
-        maven "3.8.5"
+        Maven3 "3.9.9"
     
     }
     stages {
@@ -9,20 +9,20 @@ pipeline {
             steps {
                 // Run Maven on a Unix agent.
               
-                sh "mvn clean compile"
+                bat "mvn clean compile"
             }
         }
         stage('deploy') { 
             
             steps {
-                sh "mvn package"
+                bat "mvn package"
             }
         }
         stage('Build Docker image'){
           
             steps {
-                echo "Hello Java Express"
-                sh 'ls'
+                echo "Hello docker image found"
+                bat 'ls'
                 sh 'docker build -t  anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER} .'
             }
         }
