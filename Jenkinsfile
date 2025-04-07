@@ -1,55 +1,50 @@
 pipeline {
-    agent any 
+    agent any
     tools {
-        Maven3 "3.9.9"
-    
+        maven 'Maven3' // Ensure "Maven3" is the label you configured in Jenkins Global Tools
+    }
+    environment {
+        IMAGE_NAME = "ramya739/docker_jenkins_springboot"
     }
     stages {
-        stage('Compile and Clean') { 
+        stage('Clean and Compile') {
             steps {
-                // Run Maven on a Unix agent.
-              
-                bat "mvn clean compile"
+                bat 'mvn clean compile'
             }
         }
-        stage('deploy') { 
-            
+        stage('Package') {
             steps {
-                bat "mvn package"
+                bat 'mvn package'
             }
         }
-        stage('Build Docker image'){
-          
+        stage('Build Docker Image') {
             steps {
-                echo "Hello docker image found"
-                bat 'ls'
-                sh 'docker build -t  anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER} .'
+                echo "Building Docker image..."
+                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ."
             }
         }
-        stage('Docker Login'){
-            
+        stage('Docker Login') {
             steps {
-                 withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
-                    sh "docker login -u anvbhaskar -p ${Dockerpwd}"
+                withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+                    bat "docker login -u ramya739 -p %Dockerpwd%"
                 }
-            }                
-        }
-        stage('Docker Push'){
-            steps {
-                sh 'docker push anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER}'
             }
         }
-        stage('Docker deploy'){
+        stage('Push Docker Image') {
             steps {
-               
-                sh 'docker run -itd -p  8081:8080 anvbhaskar/docker_jenkins_springboot:${BUILD_NUMBER}'
+                bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
             }
         }
-        stage('Archving') { 
+        stage('Run Docker Container') {
             steps {
-                 archiveArtifacts '**/target/*.jar'
+                // Optional: Stop existing container before running new one
+                bat "docker run -itd -p 8080:8081 %IMAGE_NAME%:%BUILD_NUMBER%"
+            }
+        }
+        stage('Archive Artifacts') {
+            steps {
+                archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             }
         }
     }
 }
-
