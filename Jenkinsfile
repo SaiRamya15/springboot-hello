@@ -18,8 +18,9 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                echo "Building Docker image..."
-                bat "docker build -t %IMAGE_NAME%:%BUILD_NUMBER% ."
+                echo "heloo java express"
+                bat 'dir'
+                bat 'docker build -t ramya739/docker_jenkins_springboot:%BUILD_NUMBER% .'
             }
         }
         stage('Docker Login') {
