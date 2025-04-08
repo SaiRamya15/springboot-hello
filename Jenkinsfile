@@ -4,6 +4,7 @@ pipeline {
         maven 'Maven3' // Ensure "Maven3" is the label you configured in Jenkins Global Tools
     }
 
+
     stages {
         stage('Clean and Compile') {
             steps {
@@ -45,4 +46,5 @@ pipeline {
             }
         }
     }
+}
 
