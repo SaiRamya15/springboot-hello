@@ -32,13 +32,13 @@ pipeline {
         }
         stage('Push Docker Image') {
             steps {
-                bat "docker push %IMAGE_NAME%:%BUILD_NUMBER%"
+                bat 'docker push ramya739/docker_jenkins_springboot:%BUILD_NUMBER%'
             }
         }
         stage('Run Docker Container') {
             steps {
                 // Optional: Stop existing container before running new one
-                bat "docker run -itd -p 8080:8081 %IMAGE_NAME%:%BUILD_NUMBER%"
+                bat 'docker run -itd -p 8081:9090 ramya739/docker_jenkins_springboot:%BUILD_NUMBER%'
             }
         }
         stage('Archive Artifacts') {
