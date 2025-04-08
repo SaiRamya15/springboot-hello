@@ -3,9 +3,7 @@ pipeline {
     tools {
         maven 'Maven3' // Ensure "Maven3" is the label you configured in Jenkins Global Tools
     }
-    environment {
-        IMAGE_NAME = "ramya739/docker_jenkins_springboot"
-    }
+}
     stages {
         stage('Clean and Compile') {
             steps {
@@ -25,7 +23,7 @@ pipeline {
         }
         stage('Docker Login') {
             steps {
-                withCredentials([string(credentialsId: 'DockerId', variable: 'Dockerpwd')]) {
+                withCredentials([usernamePassword(credentialsId: 'Dockerid', passwordVariable: 'Dockerpwd', usernameVariable: 'Dockerid')]) {
                     bat "docker login -u ramya739 -p %Dockerpwd%"
                 }
             }
